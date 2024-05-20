@@ -312,20 +312,20 @@ For validating my model, I've created the directory /test_dataset consisting of 
 
 | Picture Name | Actual Disease  | Predicted Disease | Score (0-1) |
 | ------------ | --------------  | ----------------- | ----------- |
-| bb1.png      | Bacterialblight | Bacterialblight   | 1           |
+| bb1.png      | Bacterialblight | Brownspot         | 0           |
 | bb2.png      | Bacterialblight | Bacterialblight   | 1           |
 | bb3.png      | Bacterialblight | Bacterialblight   | 1           |
 | bb4.png      | Bacterialblight | Bacterialblight   | 1           |
-| bb5.png      | Bacterialblight | Bacterialblight   | 1           |
-| bs1.png      | Brownspot       | Brownspot         | 1           |
-| bs2.png      | Brownspot       | Brownspot         | 1           |
-| bs3.png      | Brownspot       | Brownspot         | 1           |
-| bs4.png      | Brownspot       | Brownspot         | 1           |
-| bs5.png      | Brownspot       | Brownspot         | 1           |
-| ls1.png      | Leafsmut        | Leafsmut          | 1           |
-| ls2.png      | Leafsmut        | Leafsmut          | 1           |
-| ls3.png      | Leafsmut        | Leafsmut          | 1           |
+| bb5.png      | Bacterialblight | Leafsmut          | 0           |
+| bs1.png      | Brownspot       | Leafsmut          | 0           |
+| bs2.png      | Brownspot       | Leafsmut          | 0           |
+| bs3.png      | Brownspot       | Bacterialblight   | 0           |
+| bs4.png      | Brownspot       | Bacterialblight   | 0           |
+| bs5.png      | Brownspot       | Leafsmut          | 0           |
+| ls1.png      | Leafsmut        | Brownspot         | 0           |
+| ls2.png      | Leafsmut        | Brownspot         | 0           |
+| ls3.png      | Leafsmut        | Brownspot         | 0           |
 | ls4.png      | Leafsmut        | Leafsmut          | 1           |
-| ls5.png      | Leafsmut        | Leafsmut          | 1           |
+| ls5.png      | Leafsmut        | Brownspot         | 0           |
 
-Overall score: 15/15
+Overall score: 4/15

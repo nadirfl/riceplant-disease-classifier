@@ -28,21 +28,47 @@ function checkFiles(files) {
 
     fetch('/analyze', {
         method: 'POST',
-        headers: {
-        },
         body: formData
     }).then(
         response => {
             console.log(response)
-            response.text().then(function (text) {
-                answer.innerHTML = text;
-            });
-
+            return response.json()
         }
     ).then(
-        success => console.log(success)
+        data => {
+            console.log(data)
+            answer.innerHTML = JSON.stringify(data, null, 2)
+            updateChart(data)
+        }
     ).catch(
         error => console.log(error)
     );
 
+}
+
+function updateChart(data) {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (window.bar != undefined) {
+        window.bar.destroy();
+    }
+    window.bar = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(item => item.className),
+            datasets: [{
+                label: 'Wahrscheinlichkeit',
+                data: data.map(item => item.probability),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }

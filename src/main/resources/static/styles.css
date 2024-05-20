@@ -1,0 +1,63 @@
+:root {
+    --primary-color: #0056b3; /* Dunkelblau */
+    --secondary-color: #e9ecef; /* Sehr helles Grau */
+    --accent-color: #ffc107; /* Bernstein */
+}
+
+body {
+    background-color: var(--secondary-color);
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h1, h3 {
+    color: var(--primary-color);
+}
+
+p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.custom-file-label {
+    background-color: var(--secondary-color);
+}
+
+
+.button, .btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover, .btn:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+.custom-file-input {
+    border-radius: 5px;
+    transition: border .3s ease-in-out;
+}
+
+.custom-file-input:hover {
+    border: 2px solid var(--primary-color);
+}
+
+.img-fluid {
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.custom-file-input:active, .custom-file-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+}
