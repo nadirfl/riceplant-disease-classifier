@@ -9,8 +9,6 @@
 6. Interpretation
 7. Validation
 
-TODO: add index for titles according to table of contents
-
 ## 1. Project goal and motivation
 For this project, I wanted to build an application that could potentially solve a real-world problem. I was also keen on experimenting with Computer Vision and Image Classifiers more since these are fascinating concepts that I'd like to know more of.
 
