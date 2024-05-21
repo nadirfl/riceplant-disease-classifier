@@ -1,4 +1,8 @@
 # Rice Leaf Image Classifier
+## Quicklinks:
+ - Run the application locally: ```RiceplantdiseasesApplication.main()```
+ - Creating and training the model: ```Training.main()```
+ - Access to app on Azure: TODO
 
 ## Table of contents
 1. Project goal and motivation
