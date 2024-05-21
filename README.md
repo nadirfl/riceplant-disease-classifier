@@ -312,7 +312,14 @@ Here you can find an overview of the different test runs:
 | 5       | 0.79             | 0.75         | 0.93                | 0.27            | 10min                  |
 
 ## 7. Validation
-For validating my model, I've created the directory /test_dataset consisting of 5 pictures per rice plant disease that I've manually downloaded from Google Images. Here are the results:
+For validating my model, I've created the directory /test_dataset consisting of 5 pictures per rice plant disease that I've manually downloaded from Google Images. 
+
+The distinct features per disease are the following:
+ - Bacterialblight: A lighter stripe following the leaf
+ - Brownspot: brown spots on the leaf (as the name suggests)
+ - Leafsmut: lighter spots with a dark border on the leaf
+
+Here are the results:
 
 | Picture Name | Actual Disease  | Predicted Disease | Score (0-1) |
 | ------------ | --------------  | ----------------- | ----------- |
