@@ -274,7 +274,7 @@ Validating:  100% |========================================|
 - The performance is worse with the added transformations
 - Restoring the parameters to the best model yet
 
-### 5.5 Final Run
+### 5.5 Fifth Run
 #### 5.5.1 Changes
 - Transformations
   - removed ```.addTransform(new RandomResizedCrop(imageHeight, imageWidth))```
@@ -296,7 +296,26 @@ Validating:  100% |========================================|
 17:49:50.120 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.93, SoftmaxCrossEntropyLoss: 0.25
 ```
 #### 5.5.3 Conclusion
-With a validation accuracy of 0.93 this is the best result yet. I will keep the current model.
+With a validation accuracy of 0.93 this is the best result yet. I will keep the current model for now.
+
+### 5.6 Last Run
+#### Changes 
+Training Config
+ - Add gradient descent and L2-regulation (weight decay of 0.0001)
+
+#### Results
+```
+16:48:27.676 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Epoch 1 finished.
+16:48:27.677 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Train: Accuracy: 0.50, SoftmaxCrossEntropyLoss: 1.03
+16:48:27.677 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.41, SoftmaxCrossEntropyLoss: 1.42
+Training:    100% |========================================| Accuracy: 0.56, SoftmaxCrossEntropyLoss: 0.94
+Validating:  100% |========================================|
+16:53:40.678 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Epoch 2 finished.
+16:53:40.679 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Train: Accuracy: 0.56, SoftmaxCrossEntropyLoss: 0.94
+16:53:40.679 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.61, SoftmaxCrossEntropyLoss: 0.89
+```
+#### Conclusion
+The model performs worse in the validation, but the out-of-sample tests (tests in the Validation chapter) looks more promising and this new model seems to generalize better.
 
 ## 6. Interpretation
 After trying out different parameters for training the model and evaluating the performances, I've decided to use the model from the first run (also last run in the training section above) since it yielded the best performance in the validation.
@@ -314,29 +333,66 @@ Here you can find an overview of the different test runs:
 ## 7. Validation
 For validating my model, I've created the directory /test_dataset consisting of 5 pictures per rice plant disease that I've manually downloaded from Google Images. 
 
-The distinct features per disease are the following:
+The distinct features per disease are the following (based on the dataset):
  - Bacterialblight: A lighter stripe following the leaf
  - Brownspot: brown spots on the leaf (as the name suggests)
  - Leafsmut: lighter spots with a dark border on the leaf
 
-Here are the results:
+Each prediction from my model gets a score of either 0 (incorrect) or 1 (correct) based on the prediction with the highest probability:
 
 | Picture Name | Actual Disease  | Predicted Disease | Score (0-1) |
 | ------------ | --------------  | ----------------- | ----------- |
-| bb1.png      | Bacterialblight | Brownspot         | 0           |
+| bb1.png      | Bacterialblight | Bacterialblight   | 1           |
+| bb2.png      | Bacterialblight | Bacterialblight   | 1           |
+| bb3.png      | Bacterialblight | Leafsmut          | 0           |
+| bb4.png      | Bacterialblight | Bacterialblight   | 1           |
+| bb5.png      | Bacterialblight | Brownspot         | 0           |
+| bs1.png      | Brownspot       | Bacterialblight   | 0           |
+| bs2.png      | Brownspot       | Bacterialblight   | 0           |
+| bs3.png      | Brownspot       | Bacterialblight   | 0           |
+| bs4.png      | Brownspot       | Bacterialblight   | 0           |
+| bs5.png      | Brownspot       | Bacterialblight   | 0           |
+| ls1.png      | Leafsmut        | Leafsmut          | 1           |
+| ls2.png      | Leafsmut        | Leafsmut          | 1           |
+| ls3.png      | Leafsmut        | Bacterialblight   | 0           |
+| ls4.png      | Leafsmut        | Brownspot         | 0           |
+| ls5.png      | Leafsmut        | Bacterialblight   | 0           |
+
+Overall score: 5/15
+
+Noticeable problems: 
+ - The prediction is highly dependent on the picture. 
+ - In the picture *bb3.png* for example, there is a slight darker border around the affected area that might suggests a disease of leaf smut.
+ - The same goes for the picture *bb5.png*, where darker parts might be (wrongfully) interpreted as brown spots
+ - In picture *bs4.png*, there is an area on the leaf which reflects light and which might be (wrongfully) interpreted
+ - In picture *ls5.png*, I would have expected a perfect prediction for Leafsmut since the diseases is clearly visible but the white spots are a bit longer than in the other pictures
+
+Conclusion:
+ - It appears that my model is overfitted.
+ - The following attempts have been made:
+   - Reduce Epoch to 1: maybe the insufficient amount of data is not enough for two epochs:
+     - Validate: Accuracy: 0.92, SoftmaxCrossEntropyLoss: 0.23, Test score 3/15 -> even worse
+   - Add gradient descent and L2-regulation (weight decay of 0.0001)
+     - Validate: Accuracy: 0.61, SoftmaxCrossEntropyLoss: 0.89, Test score 8/15
+
+After adding the gradient descent and the L2-regulation, the model seems to generalize better. For that reason, I'm keeping the latest model. To further improve the model, I would need a larger dataset. 
+
+| Picture Name | Actual Disease  | Predicted Disease | Score (0-1) |
+| ------------ | --------------  | ----------------- | ----------- |
+| bb1.png      | Bacterialblight | Bacterialblight   | 1           |
 | bb2.png      | Bacterialblight | Bacterialblight   | 1           |
 | bb3.png      | Bacterialblight | Bacterialblight   | 1           |
 | bb4.png      | Bacterialblight | Bacterialblight   | 1           |
-| bb5.png      | Bacterialblight | Leafsmut          | 0           |
-| bs1.png      | Brownspot       | Leafsmut          | 0           |
-| bs2.png      | Brownspot       | Leafsmut          | 0           |
-| bs3.png      | Brownspot       | Bacterialblight   | 0           |
-| bs4.png      | Brownspot       | Bacterialblight   | 0           |
-| bs5.png      | Brownspot       | Leafsmut          | 0           |
-| ls1.png      | Leafsmut        | Brownspot         | 0           |
-| ls2.png      | Leafsmut        | Brownspot         | 0           |
-| ls3.png      | Leafsmut        | Brownspot         | 0           |
+| bb5.png      | Bacterialblight | Bacterialblight   | 1           |
+| bs1.png      | Brownspot       | Bacterialblight   | 0           |
+| bs2.png      | Brownspot       | Bacterialblight   | 0           |
+| bs3.png      | Brownspot       | Brownspot         | 1           |
+| bs4.png      | Brownspot       | Leafsmut          | 0           |
+| bs5.png      | Brownspot       | Bacterialblight   | 0           |
+| ls1.png      | Leafsmut        | Bacterialblight   | 0           |
+| ls2.png      | Leafsmut        | Bacterialblight   | 0           |
+| ls3.png      | Leafsmut        | Leafsmut          | 1           |
 | ls4.png      | Leafsmut        | Leafsmut          | 1           |
-| ls5.png      | Leafsmut        | Brownspot         | 0           |
+| ls5.png      | Leafsmut        | Bacterialblight   | 0           |
 
-Overall score: 4/15
+Overall score: 8/15

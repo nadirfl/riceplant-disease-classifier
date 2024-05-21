@@ -23,6 +23,8 @@ import ai.djl.training.dataset.RandomAccessDataset;
 import ai.djl.training.evaluator.Accuracy;
 import ai.djl.training.listener.TrainingListener;
 import ai.djl.training.loss.Loss;
+import ai.djl.training.optimizer.Optimizer;
+import ai.djl.training.tracker.MultiFactorTracker;
 import ai.djl.translate.TranslateException;
 
 public final class Training {
@@ -96,7 +98,17 @@ public final class Training {
     }
 
     private static TrainingConfig setupTrainingConfig(Loss loss) {
+
+        MultiFactorTracker learningRateTracker = MultiFactorTracker.builder()
+                .setBaseValue(0.001f)
+                .setSteps(new int[]{5, 10, 15})
+                .build();
+
         return new DefaultTrainingConfig(loss)
+            .optOptimizer(Optimizer.sgd()
+                        .setLearningRateTracker(learningRateTracker)
+                        .optWeightDecays(0.0001f) // L2-regulation
+                        .build())
             .addEvaluator(new Accuracy())
             .addTrainingListeners(TrainingListener.Defaults.logging());
     }
