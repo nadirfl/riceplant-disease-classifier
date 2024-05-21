@@ -11,18 +11,19 @@
 
 TODO: add index for titles according to table of contents
 
-## Project goal and motivation
+## 1. Project goal and motivation
 For this project, I wanted to build an application that could potentially solve a real-world problem. I was also keen on experimenting with Computer Vision and Image Classifiers more since these are fascinating concepts that I'd like to know more of.
 
 After researching for existing datasets on Kaggle, I've stumpled upon the dataset for rice plant diseases. After reviewing the available images and documentation, I was certain to build a model with this dataset, since it's an applicable model for a real-world problem.
 
-## Data collection and description
+## 2. Data collection and description
 Link to the dataset: https://www.kaggle.com/datasets/jay7080dev/rice-plant-diseases-dataset
 
 *The Rice Life Disease Dataset is an extensive collection of data focused on three major diseases that affect rice plants: Bacterial Blight (BB), Brown Spot (BS), and Leaf Smut (LS).*
 
 The dataset consists of 3 directories (as of 20th of May 2024):
-rice-plant-diseases-dataset
+
+    rice-plant-diseases-dataset
     ├── Bacterialblight: 1604 images
     ├── Brownspot:       1620 images
     └── Leafsmut:        1460 images
@@ -34,16 +35,16 @@ Definition of the rice plant diseases:
 - Brown spot: a fungal disease that infects the coleoptile, leaves, leaf sheath, panicle branches, glumes, and spikelets. Its most observable damage is the numerous big spots on the leaves which can kill the whole leaf
 - Leaf smut: a widely distributed, but somewhat minor, disease of rice. The fungus produces slightly raised, angular, black spots (sori) on both sides of the leaves. Although rare, it also can produce spots on leaf sheaths
 
-## Prerequisites
+## 3. Prerequisites
 There are no specific requirements to run this application. You need the usual installments for Java 21, etc. which we have already completed in the course "Model Deployment and Maintenance".
 
 However, to train the model locally, you need to download the dataset which you can find [here](https://www.kaggle.com/datasets/jay7080dev/rice-plant-diseases-dataset). I've downloaded the dataset on the 20th of May 2024.
 
 After downloading and unzipping the dataset make sure to first rename the folder to "rice_leafs" and then place it under the root folder of the application (see chapter "Project structure" for the exact location).
 
-## Project structure
-RICEPLANTDISEASES
-    │
+## 4. Project structure
+    RICEPLANTDISEASES
+    |
     ├── models/                                     # Directory containing related files for the model
     |   ├── riceLeafClassifier-0002.params          # File containing the parameters for the image classifier
     |   └── synset.txt                              # File containing the labels for the image classifier
@@ -73,7 +74,7 @@ RICEPLANTDISEASES
     ├── pom.xml                                     # File containing the dependencies
     └── README.md                                   # Project overview and documentation
 
-## Modeling and Training
+## 5. Modeling and Training
 For modelling I'm using the [DeepJavaLibrary](https://djl.ai/). This library allows me to quickly build and fine-tune a model and provides various neural networks for different problems. 
 
 I'm using the Residual Network (ResNet) which is a generic implementation adapted from https://github.com/tornadomeet/ResNet/blob/master/symbol_resnet.py (Original author Wei Wu) by Antti-Pekka Hynninen. This implements the original resnet ILSVRC 2015 winning network from Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun and is named as a "Deep Residual Learning for Image Recognition"
@@ -88,24 +89,25 @@ Block resNet50 = ResNetV1.builder()
 ```
 The neural network consists of 50 layers and have 3 output layers (labels for the diseases)
 The constants (IMAGE_HEIGHT, etc.) are defined in the class and have been altered for the different runs (see down below).
-TODO: add values of constants
 
-The training is done in the class ```Training.java``` where I use the dataset to train my model.
+The training is done in the class ```Training.java``` where I use the dataset to train my model. To start the training you can start the ```main()``` method.
+
+
 I've chosen the following (hyper-)parameters after experimenting (see test runs down below):
 - Training split: 80/20
 - Training configuration: 
-- - Softmax Cross Entropy Loss function
-- - - MultiFactorTracker added to reduce learning rate after certain amount of epochs
+  - Softmax Cross Entropy Loss function
+    - MultiFactorTracker added to reduce learning rate after certain amount of epochs
 - Image transformations
-- - Resizing to 244x244
-- - Random flip (left/right, top/bottom)
+  - Resizing to 244x244
+  - Random flip (left/right, top/bottom)
 - Batch size before updating model: 32
 - Epochs: 10
 
 After training, the model (riceLeafClassifier-0002.params) and the labels (synset.txt) are saved in the directory /models.
 
-### First run
-#### Hyperparameters:
+### 5.1 First run
+#### 5.1.1 Hyperparameters:
 Model
 - Layers: 50
 - Image height and width: 100
@@ -117,10 +119,10 @@ Training
 - Training configuration: loss
 - evaluator: accuracy
 - Transformations
-- - ```.addTransform(new RandomFlipLeftRight())```
-- - ```.addTransform(new RandomFlipTopBottom())```
+  - ```.addTransform(new RandomFlipLeftRight())```
+  - ```.addTransform(new RandomFlipTopBottom())```
 
-#### Results:
+#### 5.1.2 Results:
 ```
 13:09:57.304 [main] WARN ai.djl.mxnet.jna.LibUtils -- No matching cuda flavor for win found: cu065mkl/sm_75.
 13:09:57.547 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Training on: cpu().
@@ -136,18 +138,18 @@ Validating:  100% |========================================|
 13:21:18.170 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Train: Accuracy: 0.85, SoftmaxCrossEntropyLoss: 0.54
 13:21:18.171 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.89, SoftmaxCrossEntropyLoss: 0.52
 ```
-#### Conclusion:
+#### 5.1.3 Conclusion:
 - Really good accuracy of 0.89 in the validation for the first run
 - I'll try to improve this more
 
-### Second Run
-#### Changes
+### 5.2 Second Run
+#### 5.2.1 Changes
 Training
 - Transformations removed
-- - ```.addTransform(new RandomFlipLeftRight())```
-- - ```.addTransform(new RandomFlipTopBottom())```
+  - ```.addTransform(new RandomFlipLeftRight())```
+  - ```.addTransform(new RandomFlipTopBottom())```
 
-#### Results:
+#### 5.2.2 Results:
 ```
 13:23:59.111 [main] WARN ai.djl.mxnet.jna.LibUtils -- No matching cuda flavor for win found: cu065mkl/sm_75.
 13:23:59.314 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Training on: cpu().
@@ -164,22 +166,22 @@ Validating:  100% |========================================|
 13:35:04.233 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.82, SoftmaxCrossEntropyLoss: 0.58
 ```
 
-#### Conclusion:
+#### 5.2.3 Conclusion:
 - Performance a bit worse (0.82 vs 0.89 accuracy). Keeping the transformations
 
-### Third Run:
-#### Changes
+### 5.3 Third Run:
+#### 5.3.1 Changes
 Model
--Image height and width: 224x224
+- Image height and width: 224x224
 
 Training
 - Epochs: 10
 - Transformations
-- - added ```.addTransform(new RandomFlipLeftRight())```
-- - added ```.addTransform(new RandomFlipTopBottom())```
+  - added ```.addTransform(new RandomFlipLeftRight())```
+  - added ```.addTransform(new RandomFlipTopBottom())```
 - MultiFactorTracker added to reduce learning rate after certain amount of epochs
 
-#### Results
+#### 5.3.2 Results
 ```
 13:44:46.197 [main] WARN ai.djl.mxnet.jna.LibUtils -- No matching cuda flavor for win found: cu065mkl/sm_75.
 13:44:46.385 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Training on: cpu().
@@ -236,21 +238,21 @@ Validating:  100% |========================================|
 17:19:54.185 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.73, SoftmaxCrossEntropyLoss: 0.60
 ```
 
-#### Conclusion
+#### 5.3.3 Conclusion
 - leaving notebook on standby was not beneficial for the training performance (computational)
 - Training took a lot of time and did not yield better results
-- reducing the image size back to 100x100 and epoch to 2
+- Reducing the image size back to 100x100 and epoch to 2
 
-### Fourth Run
-#### Changes
+### 5.4 Fourth Run
+#### 5.4.1 Changes
 - Epoch 2
 - Image Size: 100 x 100
 - Transformations
-- - added ```.addTransform(new RandomResizedCrop(imageHeight, imageWidth))```
-- - added ```.addTransform(new RandomBrightness(0.1f))```
+  - added ```.addTransform(new RandomResizedCrop(imageHeight, imageWidth))```
+  - added ```.addTransform(new RandomBrightness(0.1f))```
 - removed MultiFactorTracker
 
-#### Results
+#### 5.4.2 Results
 ```
 17:24:41.630 [main] WARN ai.djl.mxnet.jna.LibUtils -- No matching cuda flavor for win found: cu065mkl/sm_75.
 17:24:41.938 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Training on: cpu().
@@ -266,16 +268,16 @@ Validating:  100% |========================================|
 17:37:51.949 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Train: Accuracy: 0.77, SoftmaxCrossEntropyLoss: 0.60
 17:37:51.949 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.79, SoftmaxCrossEntropyLoss: 0.55
 ```
-#### Conclusion
+#### 5.4.3 Conclusion
 - The performance is worse with the added transformations
 - Restoring the parameters to the best model yet
 
-### Final Run
-#### Changes
+### 5.5 Final Run
+#### 5.5.1 Changes
 - Transformations
-- - removed ```.addTransform(new RandomResizedCrop(imageHeight, imageWidth))```
-- - removed ```.addTransform(new RandomBrightness(0.1f))```
-#### Result
+  - removed ```.addTransform(new RandomResizedCrop(imageHeight, imageWidth))```
+  - removed ```.addTransform(new RandomBrightness(0.1f))```
+#### 5.5.2 Result
 ```
 17:39:43.938 [main] WARN ai.djl.mxnet.jna.LibUtils -- No matching cuda flavor for win found: cu065mkl/sm_75.
 17:39:44.256 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Training on: cpu().
@@ -291,11 +293,11 @@ Validating:  100% |========================================|
 17:49:50.119 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Train: Accuracy: 0.91, SoftmaxCrossEntropyLoss: 0.28
 17:49:50.120 [main] INFO ai.djl.training.listener.LoggingTrainingListener -- Validate: Accuracy: 0.93, SoftmaxCrossEntropyLoss: 0.25
 ```
-#### Conclusion
+#### 5.5.3 Conclusion
 With a validation accuracy of 0.93 this is the best result yet. I will keep the current model.
 
-## Interpretation
-After trying out different parameters for training the model and evaluating the performances, I've decided to use the model from the first run since it yielded the best performance in the validation.
+## 6. Interpretation
+After trying out different parameters for training the model and evaluating the performances, I've decided to use the model from the first run (also last run in the training section above) since it yielded the best performance in the validation.
 
 Here you can find an overview of the different test runs:
 
@@ -307,7 +309,7 @@ Here you can find an overview of the different test runs:
 | 4       | 0.77             | 0.60         | 0.79                | 0.55            | 13min                  |
 | 5       | 0.79             | 0.75         | 0.93                | 0.27            | 10min                  |
 
-## Validation
+## 7. Validation
 For validating my model, I've created the directory /test_dataset consisting of 5 pictures per rice plant disease that I've manually downloaded from Google Images. Here are the results:
 
 | Picture Name | Actual Disease  | Predicted Disease | Score (0-1) |
