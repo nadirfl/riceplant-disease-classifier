@@ -11,6 +11,7 @@
 5. Modeling and Training
 6. Interpretation
 7. Validation
+8. Conclusion
 
 ## 1. Project goal and motivation
 
